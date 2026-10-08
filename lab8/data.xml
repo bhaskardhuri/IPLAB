@@ -1,0 +1,25 @@
+<!-- data.xml -->
+
+<?xml version="1.0" encoding="UTF-8"?>
+<students>
+    <student>
+        <id>101</id>
+        <name>Rahul Patil</name>
+        <branch>Computer Engineering</branch>
+        <marks>85</marks>
+    </student>
+
+    <student>
+        <id>102</id>
+        <name>Priya Naik</name>
+        <branch>Information Technology</branch>
+        <marks>90</marks>
+    </student>
+
+    <student>
+        <id>103</id>
+        <name>Amit Sawant</name>
+        <branch>Artificial Intelligence</branch>
+        <marks>88</marks>
+    </student>
+</students>

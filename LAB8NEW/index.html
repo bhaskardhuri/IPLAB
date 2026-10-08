@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html ng-app="xmlApp">
+<head>
+  <script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.8.2/angular.min.js"></script>
+</head>
+<body ng-controller="StudentCtrl">
+
+  <h3>Students (GET)</h3>
+  <ul>
+    <li ng-repeat="s in students">{{s.id}} - {{s.name}} ({{s.course}})</li>
+  </ul>
+
+  <h3>Add Student (POST)</h3>
+  <input ng-model="n.id" placeholder="ID">
+  <input ng-model="n.name" placeholder="Name">
+  <input ng-model="n.course" placeholder="Course">
+  <button ng-click="addStudent()">Add</button>
+  <p>{{message}}</p>
+
+<script>
+angular.module('xmlApp', [])
+.controller('StudentCtrl', function ($scope, $http) {
+  $scope.students = [];
+  $scope.n = {};
+
+  // ---------- GET ----------
+  $scope.load = function () {
+    $http.get('/students', { transformResponse: r => r })  // keep raw XML text
+      .then(function (res) {
+        var xml = new DOMParser().parseFromString(res.data, 'application/xml');
+        var nodes = xml.getElementsByTagName('student');
+        $scope.students = [];
+        for (var i = 0; i < nodes.length; i++) {
+          $scope.students.push({
+            id:     nodes[i].getElementsByTagName('id')[0].textContent,
+            name:   nodes[i].getElementsByTagName('name')[0].textContent,
+            course: nodes[i].getElementsByTagName('course')[0].textContent
+          });
+        }
+      });
+  };
+
+
+  // ---------- POST ----------
+  $scope.addStudent = function () {
+    var xmlData =
+      '<student><id>' + $scope.n.id + '</id>' +
+      '<name>' + $scope.n.name + '</name>' +
+      '<course>' + $scope.n.course + '</course></student>';
+
+    $http.post('/students', xmlData, {
+      headers: { 'Content-Type': 'application/xml' }
+    }).then(function (res) {
+      $scope.message = res.data;   // "Saved"
+      $scope.n = {};
+      $scope.load();               // GET again to show the new record
+    });
+  };
+
+  $scope.load();
+});
+</script>
+</body>
+</html>
